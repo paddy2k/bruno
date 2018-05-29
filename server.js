@@ -78,14 +78,21 @@ function init(){
 
 function main(){
   getMowerStatus(function(body){
-    console.log({
+    let data = {
       "storedTimestamp": body.storedTimestamp,
       "batteryPercent": body.batteryPercent,
       "mowerStatus": body.mowerStatus,
       "operatingMode": body.operatingMode,
       "latitude": body.lastLocations[0].latitude,
       "longitude": body.lastLocations[0].longitude,
-    })
+    };
+    console.log(data);
+
+    var query = con.query('INSERT INTO bruno SET ?', data, function (error, results, fields) {
+      if (error) throw error;
+      console.log("INSERTED");
+    });
+    console.log(query.sql); // INSERT INTO posts SET `id` = 1, `title` = 'Hello MySQL'
   });
 }
 
