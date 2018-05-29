@@ -1,5 +1,6 @@
 const dotenv = require('dotenv').config();
 const request = require('request');
+const mysql = require('mysql');
 
 const ident_api = "https://iam-api.dss.husqvarnagroup.net/api/v3/token";
 const main_api = "https://amc-api.dss.husqvarnagroup.net/v1"
