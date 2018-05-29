@@ -5,11 +5,14 @@ const mysql = require('mysql');
 const ident_api = "https://iam-api.dss.husqvarnagroup.net/api/v3/token";
 const main_api = "https://amc-api.dss.husqvarnagroup.net/v1"
 
+const interval = 30000;
+
 let state = {};
 let con = mysql.createConnection({
   host: "localhost",
   user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 });
 
 function getToken(){
@@ -77,23 +80,28 @@ function init(){
 }
 
 function main(){
-  getMowerStatus(function(body){
-    let data = {
-      "storedTimestamp": body.storedTimestamp,
-      "batteryPercent": body.batteryPercent,
-      "mowerStatus": body.mowerStatus,
-      "operatingMode": body.operatingMode,
-      "latitude": body.lastLocations[0].latitude,
-      "longitude": body.lastLocations[0].longitude,
-    };
-    console.log(data);
+  setInterval(function(){
+    getMowerStatus(function(body){
+      let data = {
+        "mower_id": state['mower_id'],
+        "storedTimestamp": body.storedTimestamp,
+        "batteryPercent": body.batteryPercent,
+        "mowerStatus": body.mowerStatus,
+        "operatingMode": body.operatingMode,
+        "latitude": body.lastLocations[0].latitude,
+        "longitude": body.lastLocations[0].longitude,
+      };
 
-    var query = con.query('INSERT INTO bruno SET ?', data, function (error, results, fields) {
-      if (error) throw error;
-      console.log("INSERTED");
-    });
-    console.log(query.sql); // INSERT INTO posts SET `id` = 1, `title` = 'Hello MySQL'
-  });
+      var query = con.query('INSERT INTO mower_log SET ?', data, function (error, results, fields) {
+        if (!error){
+          console.log("Insert OK:", data.mowerStatus, '@', data.batteryPercent, data.storedTimestamp);
+        }
+        else {
+          console.log("Insert Duplicate:", data.mowerStatus, '@', data.batteryPercent, data.storedTimestamp);
+        }
+      });
+    })
+  }, interval);
 }
 
 init();
