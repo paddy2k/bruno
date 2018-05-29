@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/paddy2k/bruno/issues"
   },
-  "homepage": "https://github.com/paddy2k/bruno#readme"
+  "homepage": "https://github.com/paddy2k/bruno#readme",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "request": "^2.87.0"
+  }
 }
