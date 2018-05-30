@@ -1,6 +1,7 @@
 const dotenv = require('dotenv').config();
 const request = require('request');
-const mysql = require('mysql');
+const mysqlClient = require('mysql');
+const mongoClient = require('mongodb').MongoClient;
 
 const ident_api = "https://iam-api.dss.husqvarnagroup.net/api/v3/token";
 const main_api = "https://amc-api.dss.husqvarnagroup.net/v1"
@@ -8,12 +9,22 @@ const main_api = "https://amc-api.dss.husqvarnagroup.net/v1"
 const interval = 30000;
 
 let state = {};
-let con = mysql.createConnection({
-  host: "localhost",
+let mysql = mysqlClient.createConnection({
+  host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
 });
+
+let mongo = {};
+let bruno = {};
+mongoClient.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/`, function(err, db) {
+  if (err) throw err;
+  mongo = db;
+  bruno = mongo.db("bruno");
+});
+
+
 
 function getToken(){
   request.post(ident_api, 
@@ -72,7 +83,7 @@ function getMowerStatus(callback){
 
 
 function init(){
-  con.connect(function(err) {
+  mysql.connect(function(err) {
     if (err) throw err;
     console.log("Maria DB Connected!");
     getToken();
@@ -92,12 +103,22 @@ function main(){
         "longitude": body.lastLocations[0].longitude,
       };
 
-      var query = con.query('INSERT INTO mower_log SET ?', data, function (error, results, fields) {
+      mysql.query('INSERT INTO mower_log SET ?', data, function (error, results, fields) {
         if (!error){
           console.log("Insert OK:", data.mowerStatus, '@', data.batteryPercent, data.storedTimestamp);
         }
         else {
+          // console.error(error);
           console.log("Insert Duplicate:", data.mowerStatus, '@', data.batteryPercent, data.storedTimestamp);
+        }
+      });
+
+      bruno.collection("mower_log").insertOne(body, function(err, res) {
+        if (err){
+          console.log(err);
+        }
+        else{
+          console.log("1 document inserted");
         }
       });
     })
