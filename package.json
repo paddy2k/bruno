@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/paddy2k/bruno#readme",
   "dependencies": {
+    "compression": "^1.7.2",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "mongodb": "^3.1.0-beta4",

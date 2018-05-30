@@ -1,6 +1,7 @@
 const dotenv = require("dotenv").config();
 const mysqlClient = require("mysql");
 const express = require("express");
+const compression = require('compression');
 const app = express();
 
 let mysql = mysqlClient.createConnection({
@@ -16,6 +17,7 @@ mysql.connect(function(err) {
 });
 
 app
+	.use(compression())
   .get("/api", (req, res) => {
     res.send("Hello World!") 
   })
