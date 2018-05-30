@@ -50,7 +50,6 @@ function getToken(){
   )
 }
 
-
 function hqRequest(url, callback){
   request.get(
     {
@@ -81,7 +80,6 @@ function getMowerStatus(callback){
   })
 }
 
-
 function init(){
   mysql.connect(function(err) {
     if (err) throw err;
@@ -103,7 +101,7 @@ function main(){
         "longitude": body.lastLocations[0].longitude,
       };
 
-      mysql.query('INSERT INTO mower_log SET ?', data, function (error, results, fields) {
+      mysql.query('INSERT INTO omwer_log SET ?', data, function (error, results, fields) {
         if (!error){
           console.log("Insert OK:", data.mowerStatus, '@', data.batteryPercent, data.storedTimestamp);
         }

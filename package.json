@@ -18,6 +18,7 @@
   "homepage": "https://github.com/paddy2k/bruno#readme",
   "dependencies": {
     "dotenv": "^5.0.1",
+    "express": "^4.16.3",
     "mongodb": "^3.1.0-beta4",
     "mysql": "^2.15.0",
     "request": "^2.87.0"
