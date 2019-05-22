@@ -17,23 +17,24 @@ mysql.connect(function(err) {
 });
 
 app
-	.use(compression())
+  .use(compression())
   .get("/api", (req, res) => {
     res.send("Hello World!") 
   })
   .get("/api/mowers", (req, res) => {
   	mysql.query("SELECT DISTINCT mower_id FROM mower_log ORDER BY mowerStatus ASC", function (error, results, fields) {
-			const mowers = results.map((result) => result['mower_id']);
+		const mowers = results.map((result) => result['mower_id']);
   		res.send(mowers);
   	})
   })
   .get("/api/mowers/:mowerId", (req, res) => {
   	const mower_id = req.params.mowerId;
 
-  	mysql.query("SELECT * FROM mower_log WHERE mower_id=" + mysql.escape(mower_id), function (error, results, fields) {
+  	mysql.query("SELECT * FROM mower_log WHERE mower_id=" + mysql.escape(mower_id) +" AND dateTime > DATE_SUB(NOW(), INTERVAL 1.5 DAY)", function (error, results, fields) {
+                if(error){console.log(error);}
   		res.send(results);
   	})
   })
 ;
 
-app.listen(process.env.SERVER_PORT, () => console.log(`Example app listening on port ${process.env.SERVER_PORT}!`))
+app.listen(process.env.SERVER_PORT, () => console.log(`Example app listening on port ${process.env.SERVER_PORT}!`));

@@ -99,9 +99,10 @@ function main(){
         "operatingMode": body.operatingMode,
         "latitude": body.lastLocations[0].latitude,
         "longitude": body.lastLocations[0].longitude,
+        "dateTime": new Date(body.storedTimestamp),
       };
 
-      mysql.query('INSERT INTO omwer_log SET ?', data, function (error, results, fields) {
+      mysql.query('INSERT INTO mower_log SET ?', data, function (error, results, fields) {
         if (!error){
           console.log("Insert OK:", data.mowerStatus, '@', data.batteryPercent, data.storedTimestamp);
         }
