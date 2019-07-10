@@ -11,6 +11,18 @@ let mysql = mysqlClient.createConnection({
   database: process.env.MYSQL_DATABASE,
 });
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 mysql.connect(function(err) {
   if (err) throw err;
   console.log("Maria DB Connected!")
@@ -30,7 +42,18 @@ app
   .get("/api/mowers/:mowerId", (req, res) => {
   	const mower_id = req.params.mowerId;
 
-  	mysql.query("SELECT * FROM mower_log WHERE mower_id=" + mysql.escape(mower_id) +" AND dateTime > DATE_SUB(NOW(), INTERVAL 1.5 DAY)", function (error, results, fields) {
+const now = new Date();
+const past = new Date();
+past.setDate(past.getDate()-2);
+
+// console.log("Now:", formatDate(now));
+// console.log("Past:", formatDate(past));
+// const queryOne = "SELECT * FROM mower_log WHERE mower_id=" + mysql.escape(mower_id) +" AND dateTime > DATE_SUB(NOW(), INTERVAL 1.5 DAY)";
+const queryTwo = `SELECT * FROM mower_log WHERE mower_id=${mysql.escape(mower_id)} AND dateTime BETWEEN '${formatDate(past)}' AND '${formatDate(now)}'`;
+// console.log("Query 1:", queryOne);
+// console.log("Query 2:", queryTwo);
+
+  	mysql.query(queryTwo, function (error, results, fields) {
                 if(error){console.log(error);}
   		res.send(results);
   	})

@@ -22,6 +22,8 @@ mongoClient.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_POR
   if (err) throw err;
   mongo = db;
   bruno = mongo.db("bruno");
+
+  init();
 });
 
 
@@ -44,7 +46,7 @@ function getToken(){
       if (err) { return console.log(err); }
       state['token'] = body.data.id;
       state['provider'] = body.data.attributes.provider;
-
+      // console.log("State:", state);
       getMowers();
     }
   )
@@ -68,7 +70,7 @@ function getMowers(){
   hqRequest("/mowers", function(err, res, body) {
     if (err) { return console.log(err); }
     state['mower_id'] = body[0].id;
-    
+    // console.log("getMowers", res);
     main();
   })
 }
@@ -89,8 +91,11 @@ function init(){
 }
 
 function main(){
+  console.log("Main");
   setInterval(function(){
     getMowerStatus(function(body){
+      // console.log("GET MOWER STATUS");
+
       let data = {
         "mower_id": state['mower_id'],
         "storedTimestamp": body.storedTimestamp,
@@ -124,4 +129,4 @@ function main(){
   }, interval);
 }
 
-init();
+//init();
