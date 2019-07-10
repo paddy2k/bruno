@@ -18,15 +18,6 @@ let mysql = mysqlClient.createConnection({
 
 let mongo = {};
 let bruno = {};
-mongoClient.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/`, function(err, db) {
-  if (err) throw err;
-  mongo = db;
-  bruno = mongo.db("bruno");
-
-  init();
-});
-
-
 
 function getToken(){
   request.post(ident_api, 
@@ -129,4 +120,10 @@ function main(){
   }, interval);
 }
 
-//init();
+mongoClient.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/`, function(err, db) {
+  if (err) throw err;
+  mongo = db;
+  bruno = mongo.db("bruno");
+
+  init();
+});
