@@ -108,22 +108,24 @@ function main(){
         }
       });
 
-      bruno.collection("mower_log").insertOne(body, function(err, res) {
-        if (err){
-          console.log(err);
-        }
-        else{
-          console.log("1 document inserted");
-        }
-      });
+//       bruno.collection("mower_log").insertOne(body, function(err, res) {
+//         if (err){
+//           console.log(err);
+//         }
+//         else{
+//           console.log("1 document inserted");
+//         }
+//       });
     })
   }, interval);
 }
 
-mongoClient.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/`, function(err, db) {
-  if (err) throw err;
-  mongo = db;
-  bruno = mongo.db("bruno");
+// mongoClient.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/`, function(err, db) {
+//   if (err) throw err;
+//   mongo = db;
+//   bruno = mongo.db("bruno");
+// 
+//   init();
+// });
 
-  init();
-});
+init();
