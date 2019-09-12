@@ -41,13 +41,12 @@ app
   })
   .get("/api/mowers/:mowerId", (req, res) => {
   	const 
-      mower_id = req.params.mowerId,
-      now = new Date(),
-      past = new Date();
-    past.setDate(past.getDate()-2);
+          mower_id = req.params.mowerId,
+          past = new Date();
+          past.setDate(past.getDate()-2);
 
-    const dateQuery = `SELECT * FROM mower_log WHERE mower_id=${mysql.escape(mower_id)} AND dateTime BETWEEN '${formatDate(past)}' AND '${formatDate(now)}'`;
-
+        const dateQuery = `SELECT * FROM mower_log WHERE mower_id=${mysql.escape(mower_id)} AND dateTime BETWEEN '${formatDate(past)}' AND NOW()`;
+        console.log("DateQuery:", dateQuery);
   	mysql.query(dateQuery, function (error, results, fields) {
                 if(error){console.log(error);}
   		res.send(results);
