@@ -65,10 +65,10 @@
 
             opacity +=opacityStep;
 
+            const polyPath = polys[pathIndex].getPath();
             path.forEach(function(point, pointIndex){
-              let path = polys[pathIndex].getPath();
               let latLng = new google.maps.LatLng(point.lat, point.lng);
-              path.push(latLng);
+              polyPath.push(latLng);
             })
           })
         });
